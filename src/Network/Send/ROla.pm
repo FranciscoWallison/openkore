@@ -7,6 +7,7 @@ use Globals qw($net %config);
 use Utils qw(getTickCount);
 
 use Log qw(debug);
+use Network::CheckSum qw(add_checksum);
 
 sub new {
 	my ($class) = @_;
@@ -98,26 +99,6 @@ sub sendTokenToServer {
     debug "Sent sendTokenLogin\n", "sendPacket", 2;
 }
 
-sub add_checksum {
-	my ($self, $msg) = @_;
-
-	my $crc = 0x00;
-	for my $byte (unpack('C*', $msg)) {
-		$crc ^= $byte;
-		for (1..8) {
-			if ($crc & 0x80) {
-				$crc = (($crc << 1) ^ 0x07) & 0xFF;
-			} else {
-				$crc = ($crc << 1) & 0xFF;
-			}
-		}
-	}
-
-	# Anexa o checksum ao final da mensagem
-	$msg .= pack('C', $crc);
-	return $msg;
-}
-
 sub sendMapLogin {
 	my ($self, $accountID, $charID, $sessionID, $sex) = @_;
 	my $msg;
@@ -133,7 +114,7 @@ sub sendMapLogin {
 		sex			=> $sex,
 	});
 
-	$msg = $self->add_checksum($msg);
+        $msg = add_checksum($msg);
 	$self->sendToServer($msg);
 	
 	debug "Sent sendMapLogin\n", "sendPacket", 2;
