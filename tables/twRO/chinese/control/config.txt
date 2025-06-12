@@ -31,6 +31,8 @@ char
 # 命令"charselect 1" 回到角色選擇畫面會清除角色編號
 bindIp
 # 如果您的電腦有多個 IP 地址，你可以選擇要使用哪一個 要是您不確定，這個選項您應該保留空白。
+otpLocalIP
+# OTP 登入時使用的本地 IP (留空自動偵測)
 forceMapIP
 # 指定地圖伺服器IP [ twRO 請留空 ]
 
