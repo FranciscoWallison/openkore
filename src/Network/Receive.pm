@@ -4079,11 +4079,22 @@ sub monster_hp_info_tiny {
 #
 # This is for what eA calls PacketVersion 9, they send the AID in a 'proper' packet
 sub account_id {
-	my ($self, $args) = @_;
-	# the account ID is already unpacked into PLAIN TEXT when it gets to this function...
-	# So lets not fuckup the $accountID since we need that later... someone will prolly have to fix this later on
-	my $accountID = $args->{accountID};
-	debug sprintf("Account ID: %s (%s)\n", unpack('V',$accountID), getHex($accountID));
+        my ($self, $args) = @_;
+        # the account ID is already unpacked into PLAIN TEXT when it gets to this function...
+        # So lets not fuckup the $accountID since we need that later... someone will prolly have to fix this later on
+        my $accountID = $args->{accountID};
+        debug sprintf("Account ID: %s (%s)\n", unpack('V',$accountID), getHex($accountID));
+}
+
+##
+# recv_seed({seed})
+#
+# Stores the 16 bytes seed received on packet 0283 for ROla
+sub recv_seed {
+        my ($self, $args) = @_;
+
+        $self->{recv_seed} = $args->{seed};
+        debug sprintf("Received seed: %s\n", getHex($args->{seed})), 'connection';
 }
 
 ##
