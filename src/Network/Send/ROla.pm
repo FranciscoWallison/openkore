@@ -5,6 +5,7 @@ use strict;
 use base qw(Network::Send::ServerType0);
 use Globals qw($net %config);
 use Utils qw(getTickCount);
+use IO::Socket::INET;
 
 use Log qw(debug);
 
@@ -123,7 +124,16 @@ sub sendTokenToServer {
     my ($self, $username, $password, $master_version, $version, $token, $length, $otp_ip, $otp_port) = @_;
     my $len = $length + 92;
 
-    my $ip = '192.168.0.2';
+    my $ip = $config{otpLocalIP};
+    unless ($ip) {
+        eval {
+            my $sock = IO::Socket::INET->new(Proto => 'udp');
+            $sock->connect('8.8.8.8:53');
+            $ip = $sock->sockhost;
+            $sock->close;
+        };
+    }
+    $ip ||= '0.0.0.0';
     my $mac = $config{macAddress} || sprintf("%02x%02x%02x%02x%02x%02x", (int(rand(256)) & 0xFC) | 0x02, map { int(rand(256)) } 1..5);
     my $mac_hyphen_separated = join '-', $mac =~ /(..)/g;
 

@@ -30,6 +30,7 @@ git clone https://github.com/OpenKore/openkore.git
 ```
 
 2. Configure OpenKore: [documentation](https://openkore.com/wiki/Category:control).
+   - Optionally set `otpLocalIP` in `control/config.txt` to specify the IP sent during OTP login. Leave it blank to auto-detect your local IP.
 3. Run openkore.pl _(You can run start.exe or wxstart.exe if you use Windows)_.
 
 ## F.A.Q. (Frequently Asked Questions)

@@ -31,6 +31,7 @@ use utf8;
 use Carp::Assert;
 use Digest::MD5;
 use Math::BigInt;
+use IO::Socket::INET;
 
 # TODO: remove 'use Globals' from here, instead pass vars on
 use Globals qw(%ai_v %config $bytesSent %packetDescriptions $enc_val1 $enc_val2 $char $masterServer $syncSync $accountID %timeout %talk $skillExchangeItem $net $rodexList $rodexWrite %universalCatalog %rpackets $mergeItemList $repairList %cashShop);
@@ -1453,9 +1454,18 @@ sub sendTokenToServer {
 	my ($self, $username, $password, $master_version, $version, $token, $length, $otp_ip, $otp_port) = @_;
 	my $len =  $length + 92;
 
-	my $password_rijndael = $self->encrypt_password($password);
-	my $ip = '192.168.0.14';
-	my $mac = '20CF3095572A';
+        my $password_rijndael = $self->encrypt_password($password);
+        my $ip = $config{otpLocalIP};
+        unless ($ip) {
+                eval {
+                        my $sock = IO::Socket::INET->new(Proto => 'udp');
+                        $sock->connect('8.8.8.8:53');
+                        $ip = $sock->sockhost;
+                        $sock->close;
+                };
+        }
+        $ip ||= '0.0.0.0';
+        my $mac = '20CF3095572A';
 	my $mac_hyphen_separated = join '-', $mac =~ /(..)/g;
 
 	$net->serverDisconnect();
