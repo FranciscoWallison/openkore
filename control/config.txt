@@ -17,6 +17,8 @@ poseidonServer 127.0.0.1
 poseidonPort 24390
 
 bindIp
+# Local IP address sent during OTP login (leave blank for auto-detect)
+otpLocalIP
 forceMapIP
 
 # 1 = hook into RO client, 2 = Act as stand-alone proxy, proxy = act as true proxy
